@@ -61,7 +61,7 @@ public class IrcClient : IAsyncDisposable
 
     public async Task DisconnectAsync(string reason = "Client Terminated Session")
     {
-        if (IsConnected) return;
+        if (!IsConnected) return;
 
         Log(LogLevel.Info, "Disconnecting...");
         try
@@ -96,9 +96,6 @@ public class IrcClient : IAsyncDisposable
         Log(LogLevel.Info, $"Left channel {formattedChannel}");
     }
 
-    public async Task SendNoticeAsync(string target, string notice) =>
-        await SendRawAsync($"NOTICE {target} :{notice}");
-
     public async Task GetTopicAsync(string channel) =>
         await SendRawAsync($"TOPIC {channel}");
 
@@ -114,6 +111,9 @@ public class IrcClient : IAsyncDisposable
 
     public async Task SendMessageAsync(string target, string message) =>
         await SendRawAsync($"PRIVMSG {target} :{message}");
+
+    public async Task SendNoticeAsync(string target, string notice) =>
+        await SendRawAsync($"NOTICE {target} :{notice}");
 
     public async Task AwayAsync(string? text = null) =>
         await SendRawAsync($"AWAY{(text == null ? "" : $" {text}")}");
